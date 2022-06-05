@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!doctype html>
+<html data-n-head-ssr>
+<head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="ie=edge"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/load_page.css' %}"
+    />
+    <title>
+      Getform HTML Example
+    </title>
+    <style>
+      h1 {text-align: center;}
+      p {text-align: center;}
+      div {text-align: center;}
+    </style>
+   </head>
+<!-- <form action="load" method='POST' enctype="multipart/form-data"> -->
+<body>
+<br><br><br><br><br>
+<h1>Hello {{ name }} !</h1>
+<p> Welcome to Beta testing: </p>
+<div class="form">
+    <form action="load" enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      <p> To begin, uppload a .csv file here: </p>
+      <input type="file" name="document"/>
+      <button type="submit">
+        Upload file
+      </button>
+    </form>
+  </div>
+</body>
+</html>
+{% endblock %}

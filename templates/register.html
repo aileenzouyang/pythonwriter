@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!doctype html>
+<html data-n-head-ssr>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="{% static 'css/load_page.css' %}" />
+    <title> Register</title>
+    <style>
+      h1 {text-align: center;}
+      p {text-align: center;}
+      div {text-align: center;}
+    </style>
+   </head>
+<!-- <form action="load" method='POST' enctype="multipart/form-data"> -->
+<body>
+<h1>Hello {{ name }} !</h1>
+<p> Register here to enter beta testing and receive the latest update! </p>
+<div class="form">
+    <form action="register" enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="text" name="first_name" placeholder="First Name"/><br><br>
+        <input type="text" name="last_name" placeholder="Last Name"/><br><br>
+        <input type="text" name="username" placeholder="Username"/><br><br>
+        <input type="email" name="email" placeholder="Email"/><br><br>
+        <input type="password" name="password1" placeholder="Password"/><br><br>
+        <input type="password" name="password2" placeholder="Confirm Password"/><br><br>
+        <input type="submit"/>
+        <p>{{message}}</p>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+{% endblock %}

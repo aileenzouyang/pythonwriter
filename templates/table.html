@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Write HTML code here -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    var expanded = false;
+
+    function showCheckboxes() {
+      var checkboxes = document.getElementById("checkboxes");
+      if (!expanded) {
+        checkboxes.style.display = "block";
+        expanded = true;
+      } else {
+        checkboxes.style.display = "none";
+        expanded = false;
+      }
+    }
+
+    function selected_actions()
+    {
+      console.log("Entering the function");
+      var action = document.getElementById("selected_action");
+      var selected_action = action.options[action.selectedIndex].text;
+      document.getElementById("txtvalue").value = selected_action;
+      console.log(selected_action);
+    }
+  </script>
+
+  <title>Loaded Table</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+  <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+  <style>
+  #customers {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 5px;
+  }
+  
+  #customers tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #customers tr:hover {background-color: #ddd;}
+  
+  #customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: middle;
+    background-color: #4578e6;
+    color: white;
+  }
+</style>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Create two unequal columns that floats next to each other */
+  .column {
+    float: left;
+    padding: 5px;
+    height: 900px; /* Should be removed. Only for demonstration */
+  }
+  
+  .left {
+    width: 75%;
+  }
+  
+  .right {
+    width: 25%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+</style>
+</head>
+<body>
+<br>
+<h2 class="text-center">Automated Code Generation</h2>  
+<br>
+<div class="row">
+  <div class="column left">
+    <div class="container" style="height:800px;overflow:auto;">
+      <!-- <table class="table table-dark table-striped">> -->
+      <table id="customers">
+        <thead>
+          <tr>
+            {% for col in headers %}
+              <th>{{col}}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+    
+        <!-- jinja2 Technique -->
+        {% if d %}  
+          {% for i in d %}
+          <tr>
+            {% for col in i.values %}
+            <td>{{col}}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="column right" style="padding: 20px">
+    <form action="evaluate" method = "post">
+      {% csrf_token %}
+      <input type="hidden" id="code" name="code" value="{{ code }}">
+      <input type="hidden" id="data" name="data" value= "{{ d }}">
+      <input type="hidden" id="evaluation_message" name="evalutation_message" value= "{{ evaluation_message }}">
+      <input type="submit" value="Evaluate the Dataset">
+      <p>{{ evalutation_message }}</p>
+    </form>
+    <hr>
+    <form action="remove" method = "post">
+      {% csrf_token %}
+
+      <label for="selected_action">Choose an action:</label>
+      <select name="selected_action" id="selected_action" onchange="selected_actions();">
+      <option value= {{ action }} selected> {{ action }} </option>
+      <option value="droptoprows">Drop Top Rows</option>
+      <option value="dropcolumns">Drop Columns</option>
+      <option value="dropna">Drop NA</option>
+      <option value="conditionalfilter">conditionalfilter</option>
+      <option value="customizedcode">customizedcode</option>
+      <input type = "text" id = "txtvalue"/><br>
+      <hr>
+      </select>
+      
+      {% if action == "droptoprows"%}
+        Remove rows : <input type="text" name="num1">
+      {% endif %}
+
+      {% if action == "customizedcode"%}
+        Enter Customized Code : <input type="text" name="customizedcode">
+        Enter Comment : <input type="text" name="comment">
+      {% endif %}
+
+      {% if action == "dropcolumns"%}
+        <label for="columns">Columns to Keep</label>
+        <select name="columns" multiple>
+          <!-- <option > -- Select Columns to Keep -- </option> -->
+          {% for col in headers %}
+            <option>{{col}}</option>
+          {% endfor %}
+        </select>
+      {% endif %}
+
+      {% if action == "dropna"%}
+      <label for="parameter">Remove if the following parameter is na: </label>
+      <select name="parameter">
+        <!-- <option > -- Select Columns to Keep -- </option> -->
+        {% for col in headers %}
+          <option>{{col}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+
+      {% if action == "conditionalfilter"%}
+
+        <label for="include">Remove if the following parameter </label>
+        <select name="include">
+        <option value="Include">Include</option>
+        <option value="Exclude">Exclude</option>
+        </select><br>
+
+        <label for="parameter"></label>
+        <select name="parameter">
+          <!-- <option > -- Select Columns to Keep -- </option> -->
+          {% for col in headers %}
+            <option>{{col}}</option>
+          {% endfor %}
+        </select><br>
+
+        <label for="operation">is:</label>
+        <select name="operation">
+        <option value="==">==</option>
+        <option value=">=">>=</option>
+        <option value="<="><=</option>
+        <option value="<"><</option>
+        <option value=">">></option>
+        </select>
+
+        <input type="text" name="num2">
+
+      {% endif %}
+
+      <pre><code class="python">
+      {{ code }}
+      </code></pre>
+      <input type="hidden" id="data" name="evaluation_message" value= "{{ evaluation_message }}">
+      <input type="hidden" id="code" name="code" value="{{ code }}">
+      <input type="hidden" id="data" name="data" value= "{{ d }}">
+      <input type="submit">
+
+    </form> 
+
+  </div>
+</div>
+
+</body>
+
+</html>
+
+{% endblock%}

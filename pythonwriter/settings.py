@@ -130,3 +130,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+# email settings
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'flashscriptspython@gmail.com'
+EMAIL_HOST_PASSWORD = 'mvp1234Password'
+EMAIL_USE_TLS = True
