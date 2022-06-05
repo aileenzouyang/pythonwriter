@@ -43,10 +43,6 @@ def load(request):
         fs.save(uploaded_file.name,uploaded_file)
     return render(request, 'table.html')
 
-
-def test(request):
-    return render(request, 'test.html')
-
 def table(request):
 
     #print(request.method)
@@ -79,6 +75,7 @@ def evaluate(request):
     # get existing code
     code = request.POST["code"]
     data = request.POST["data"]
+    action = request.POST['selected_action']
     data = pd.DataFrame(list(eval(data)))
 
     evaluation_message = "This dataset contains {} rows and {} columns".format(len(data),len(data.columns))
@@ -92,7 +89,31 @@ def evaluate(request):
     context = {'d': data, 
                 'headers': headers,
                 'code':code,
-                'action':'',
+                'action':action,
+                'evalutation_message':evaluation_message}
+
+    return render(request, "table.html", context)
+
+def displayparameters(request):
+    code = request.POST["code"]
+    # get selected action
+    action = request.POST['selected_action']
+    #get evaluation message
+    evaluation_message = request.POST['evaluation_message']
+    data = request.POST["data"]
+    data = pd.DataFrame(list(eval(data)))
+
+    headers = data.columns
+    # parsing the DataFrame in json format.
+    json_records = data.reset_index().to_json(orient ='records')
+    json_records = data.to_json(orient ='records')
+    data = json.loads(json_records)
+    #print(list(data[0].keys()))
+    context = {'d': data, 
+                #'headers': list(data[0].keys()),
+                'headers': headers,
+                'code':code,
+                'action':action,
                 'evalutation_message':evaluation_message}
 
     return render(request, "table.html", context)
@@ -147,10 +168,9 @@ def remove(request):
     action = request.POST['selected_action']
     #get evaluation message
     evaluation_message = request.POST['evaluation_message']
-    print(action)
     data = request.POST["data"]
     data = pd.DataFrame(list(eval(data)))
-
+    print(action)
     if action == "droptoprows":
         try:
             # get index number to remove
