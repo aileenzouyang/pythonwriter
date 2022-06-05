@@ -81,16 +81,25 @@ WSGI_APPLICATION = 'pythonwriter.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'pythonwriter',
+#        'USER': 'postgres',
+#        'PASSWORD': '1234',
+#        'HOST': 'localhost'
+#    }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pythonwriter',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd6jsqddarb1s4u',
+        'USER': 'sujuxrxsugrmra',
+        'PASSWORD': '681d8ce2940dbeabb7e6055ea25cae732846c95fda49de08f944b443299c7831',
+        'HOST': 'ec2-3-211-221-185.compute-1.amazonaws.com',
+        'PORT':  '5432'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
