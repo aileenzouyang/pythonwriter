@@ -149,6 +149,7 @@
       <option value="dropna">Drop NA</option>
       <option value="conditionalfilter">conditionalfilter</option>
       <option value="customizedcode">customizedcode</option>
+      <option value="sort">sort</option>
       <!-- <input type = "text" id = "txtvalue"/><br> -->
       <input type="hidden" id="data" name="evaluation_message" value= "{{ evaluation_message }}">
       <input type="hidden" id="code" name="code" value="{{ code }}">
@@ -162,6 +163,21 @@
       {% csrf_token %}
       {% if action == "droptoprows"%}
         Remove rows : <input type="text" name="num1"> <br>
+      {% endif %}
+
+      {% if action == "sort"%}
+        <label for="parameter">Sort: </label>
+        <select name="parameter" multiple>
+          <!-- <option > -- Select Columns to Keep -- </option> -->
+          {% for col in headers %}
+            <option>{{col}}</option>
+          {% endfor %}
+        </select>
+        <select name="order" multiple>
+          <option>Ascending</option>
+          <option>Descending</option>
+        </select>
+
       {% endif %}
     
       {% if action == "customizedcode"%}

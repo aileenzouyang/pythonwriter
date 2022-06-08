@@ -78,7 +78,10 @@ def evaluate(request):
     action = request.POST['selected_action']
     data = pd.DataFrame(list(eval(data)))
 
-    evaluation_message = "This dataset contains {} rows and {} columns".format(len(data),len(data.columns))
+    nan_n = data.isnull().sum().sum()
+
+    evaluation_message = "This dataset contains {} rows and {} columns. \n".format(len(data),len(data.columns))
+    evaluation_message = evaluation_message + "{}/{} cells are empty. \n".format(nan_n, len(data)*len(data.columns))
 
     headers = data.columns
     # parsing the DataFrame in json format.
@@ -222,6 +225,22 @@ def remove(request):
             data = data[~data[parameter].isna()]
         except: print("input not a valid index number")
     
+    if action == "sort":
+        try:
+            # get index number to remove
+            parameter = request.POST["parameter"] 
+            order = request.POST["order"]        
+            # update code
+            if order == 'Ascending':
+                code = code + "# Sort {} in ascending order \n". format(parameter)
+                code = code + "df.sort_values(by = ['{}'], ascending= True, inplace = True)\n".format(parameter)
+                data.sort_values(by = parameter, ascending=True,inplace = True)
+            elif order == 'Descending':
+                code = code + "# Sort {} in descending order \n". format(parameter, order)
+                code = code + "df.sort_values(by = ['{}'], ascending= False, inplace = True)\n".format(parameter)
+                data.sort_values(by = parameter, ascending=False,inplace = True)
+        except: print("Not a valid function")
+
     if action == "conditionalfilter":
         try:
             # get index number to remove
