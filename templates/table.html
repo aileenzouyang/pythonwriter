@@ -150,6 +150,7 @@
       <option value="conditionalfilter">conditionalfilter</option>
       <option value="customizedcode">customizedcode</option>
       <option value="sort">sort</option>
+      <option value="renamecolumns">renamecolumns</option>
       <!-- <input type = "text" id = "txtvalue"/><br> -->
       <input type="hidden" id="data" name="evaluation_message" value= "{{ evaluation_message }}">
       <input type="hidden" id="code" name="code" value="{{ code }}">
@@ -159,10 +160,23 @@
       </select>
     </form>
     <hr>      
-    <form action="remove" method = "post">
+    <form action="code_generation" method = "post">
       {% csrf_token %}
       {% if action == "droptoprows"%}
         Remove rows : <input type="text" name="num1"> <br>
+      {% endif %}
+
+
+      {% if action == "renamecolumns"%}
+        <label for="parameter">Rename column: </label>
+        <select name="parameter" multiple>
+          <!-- <option > -- Select Columns to Keep -- </option> -->
+          {% for col in headers %}
+            <option>{{col}}</option>
+          {% endfor %}
+        </select>
+        <br> 
+        to : <input type="text" name="newcolname"> <br>
       {% endif %}
 
       {% if action == "sort"%}

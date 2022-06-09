@@ -52,7 +52,10 @@ def table(request):
         fs.save(uploaded_file.name,uploaded_file)
 
     #print(request.FILES['document'].name)
-    df = pd.read_csv(os.path.join(os.getcwd(),"media", request.FILES['document'].name))
+    if request.FILES['document'].name[-3:-1] == 'cs':
+        df = pd.read_csv(os.path.join(os.getcwd(),"media", request.FILES['document'].name))
+    elif request.FILES['document'].name[-3:-1] == 'ls':
+        df = pd.read_excel(os.path.join(os.getcwd(),"media", request.FILES['document'].name))
 
     # parsing the DataFrame in json format.
     json_records = df.reset_index().to_json(orient ='records')
@@ -121,7 +124,7 @@ def displayparameters(request):
 
     return render(request, "table.html", context)
 
-def remove(request):
+def code_generation(request):
 
     def execute_eqn(data, include, parameter, operation, num2):
         if include == "Include":
@@ -174,6 +177,22 @@ def remove(request):
     data = request.POST["data"]
     data = pd.DataFrame(list(eval(data)))
     print(action)
+
+    if action == "renamecolumns":
+        try:
+            # get new column name
+            newcolname = request.POST["newcolname"]
+            # get old column name 
+            oldcolname = request.POST["parameter"]   
+            #execute
+            data.rename(columns = {oldcolname:newcolname}, inplace = True)
+        except: print("Error, check inputs")
+        else:
+            # update code
+            code = code + "# Rename column {} to {}: \n". format(oldcolname, newcolname)
+            #code = code + "df = df[~(df['index'] == {})] \n".format(ind)
+            code = code + "df.rename(columns = {{'{}':'{}'}}, inplace = True) \n".format(oldcolname, newcolname)
+
     if action == "droptoprows":
         try:
             # get index number to remove
