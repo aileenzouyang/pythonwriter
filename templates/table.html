@@ -145,12 +145,12 @@
       <select name="selected_action" id="selected_action" onchange="selected_actions();">
       <option value= {{ action }} selected> {{ action }} </option>
       <option value="droptoprows">Drop Top Rows</option>
-      <option value="dropcolumns">Drop Columns</option>
-      <option value="dropna">Drop NA</option>
-      <option value="conditionalfilter">conditionalfilter</option>
-      <option value="customizedcode">customizedcode</option>
-      <option value="sort">sort</option>
-      <option value="renamecolumns">renamecolumns</option>
+      <option value="dropcolumn">Drop Column</option>
+      <option value="dropna">Drop Empty Cells (NaNs)</option>
+      <option value="conditionalfilter">Conditional Filter</option>
+      <option value="customizedcode">Customized Code</option>
+      <option value="sort">Sort</option>
+      <option value="renamecolumns">Rename Columns</option>
       <!-- <input type = "text" id = "txtvalue"/><br> -->
       <input type="hidden" id="data" name="evaluation_message" value= "{{ evaluation_message }}">
       <input type="hidden" id="code" name="code" value="{{ code }}">
@@ -199,18 +199,18 @@
         Enter Comment : <input type="text" name="comment"><hr>
       {% endif %}
 
-      {% if action == "dropcolumns"%}
-        <label for="columns">Columns to Keep</label>
-        <select name="columns" multiple>
-          <!-- <option > -- Select Columns to Keep -- </option> -->
+      {% if action == "dropcolumn"%}
+        <select name="columns">
+          Drop: <!-- <option > -- Select Column to Keep -- </option> -->
           {% for col in headers %}
             <option>{{col}}</option>
           {% endfor %}
         </select>
+        <br>
       {% endif %}
 
       {% if action == "dropna"%}
-      <label for="parameter">Remove if the following parameter is NaN: </label>
+      <label for="parameter">Remove row(s) if the following parameter contains NaN: </label>
       <select name="parameter">
         <!-- <option > -- Select Columns to Keep -- </option> -->
         {% for col in headers %}

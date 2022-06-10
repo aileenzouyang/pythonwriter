@@ -197,14 +197,28 @@ def code_generation(request):
         try:
             # get index number to remove
             ind = int(request.POST["num1"])           
-            # update code
-            code = code + "# Remove the top {} row(s): \n". format(ind)
-            #code = code + "df = df[~(df['index'] == {})] \n".format(ind)
-            code = code + "df = df.iloc[{}:] \n".format(ind)
             #execute
             #data = data[~(data["index"] == ind)]
             data = data.iloc[ind:]
         except: print("input not a valid index number")
+        else:
+            # update code
+            code = code + "# Remove the top {} row(s): \n". format(ind)
+            #code = code + "df = df[~(df['index'] == {})] \n".format(ind)
+            code = code + "df = df.iloc[{}:] \n".format(ind)
+    
+    if action == "dropcolumn":
+        try:
+            # get index number to remove
+            columns = request.POST["columns"]   
+            #execute
+            data.drop(columns=[columns], inplace = True)
+            print(columns)
+        except: print("Error")
+        else:
+            # update code
+            code = code + "# Drop column {} \n".format(columns)
+            code = code + "df = df.drop(columns = ['{}'], inplace = True) \n".format(columns)
 
     if action == "customizedcode":
         try:
